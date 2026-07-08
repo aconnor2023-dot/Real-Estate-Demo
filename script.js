@@ -1,8 +1,17 @@
 // =======================================
 // OAK & STONE ESTATE AGENTS
 // script.js
+// AI Automation Version
 // Part 1
 // =======================================
+
+
+// -----------------------------
+// Make AI Webhook
+// -----------------------------
+
+const MAKE_WEBHOOK_URL = "https://hook.eu1.make.com/gf6fusurrd7vgrt98doakthg78xgpj1l";
+
 
 // -----------------------------
 // Smooth scrolling for navigation
@@ -31,6 +40,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 
 });
 
+
 // -----------------------------
 // Navbar background on scroll
 // -----------------------------
@@ -39,20 +49,25 @@ const navbar = document.querySelector(".navbar");
 
 window.addEventListener("scroll", () => {
 
-    if (window.scrollY > 60) {
+    if (navbar) {
 
-        navbar.style.padding = "14px 30px";
-        navbar.style.transition = "0.3s";
-        navbar.style.boxShadow = "0 10px 30px rgba(0,0,0,.08)";
+        if (window.scrollY > 60) {
 
-    } else {
+            navbar.style.padding = "14px 30px";
+            navbar.style.transition = "0.3s";
+            navbar.style.boxShadow = "0 10px 30px rgba(0,0,0,.08)";
 
-        navbar.style.padding = "18px 30px";
-        navbar.style.boxShadow = "none";
+        } else {
+
+            navbar.style.padding = "18px 30px";
+            navbar.style.boxShadow = "none";
+
+        }
 
     }
 
 });
+
 
 // -----------------------------
 // Reveal sections on scroll
@@ -61,6 +76,7 @@ window.addEventListener("scroll", () => {
 const revealElements = document.querySelectorAll(
     ".about-card, .property-card, .featured-image, .location-section, .contact-container"
 );
+
 
 const revealObserver = new IntersectionObserver(
 
@@ -85,6 +101,7 @@ const revealObserver = new IntersectionObserver(
 
 );
 
+
 revealElements.forEach(element => {
 
     element.style.opacity = "0";
@@ -94,6 +111,7 @@ revealElements.forEach(element => {
     revealObserver.observe(element);
 
 });
+
 
 // -----------------------------
 // Button hover animation
@@ -107,6 +125,7 @@ document.querySelectorAll(".primary-btn").forEach(button => {
 
     });
 
+
     button.addEventListener("mouseleave", () => {
 
         button.style.transform = "translateY(0px)";
@@ -115,21 +134,14 @@ document.querySelectorAll(".primary-btn").forEach(button => {
 
 });
 
-// =======================================
-// End of Part 1
-// =======================================
-// =======================================
-// OAK & STONE ESTATE AGENTS
-// script.js
-// Part 2
-// =======================================
 
 // -----------------------------
-// Formspree AJAX Form Submission
+// Formspree + Make AI Submission
 // -----------------------------
 
 const form = document.getElementById("contact-form");
 const successMessage = document.getElementById("successMessage");
+
 
 if (form) {
 
@@ -137,19 +149,61 @@ if (form) {
 
         e.preventDefault();
 
+
         const formData = new FormData(form);
+
+
+        const leadData = {
+
+            name: formData.get("name"),
+            email: formData.get("email"),
+            phone: formData.get("phone"),
+            property: formData.get("property"),
+            message: formData.get("message")
+
+        };
+
+
+        try {
+
+            await fetch(MAKE_WEBHOOK_URL, {
+
+                method: "POST",
+
+                headers: {
+
+                    "Content-Type": "application/json"
+
+                },
+
+                body: JSON.stringify(leadData)
+
+            });
+
+
+        } catch (error) {
+
+            console.log("AI automation connection failed:", error);
+
+        }
+
 
         try {
 
             const response = await fetch(form.action, {
 
                 method: "POST",
+
                 body: formData,
+
                 headers: {
+
                     "Accept": "application/json"
+
                 }
 
             });
+
 
             if (response.ok) {
 
@@ -160,8 +214,10 @@ if (form) {
                 successMessage.classList.add("show");
 
                 successMessage.scrollIntoView({
+
                     behavior: "smooth",
                     block: "center"
+
                 });
 
             } else {
@@ -170,15 +226,29 @@ if (form) {
 
             }
 
+
         } catch (error) {
 
             alert("Unable to send your enquiry. Please check your internet connection.");
 
         }
 
+
     });
 
 }
+
+
+// =======================================
+// End of Part 1
+// =======================================
+// =======================================
+// OAK & STONE ESTATE AGENTS
+// script.js
+// AI Automation Version
+// Part 2
+// =======================================
+
 
 // -----------------------------
 // Fade in hero content
@@ -188,11 +258,13 @@ window.addEventListener("load", () => {
 
     const heroContent = document.querySelector(".hero-content");
 
+
     if (heroContent) {
 
         heroContent.style.opacity = "0";
         heroContent.style.transform = "translateY(30px)";
         heroContent.style.transition = "all 1s ease";
+
 
         setTimeout(() => {
 
@@ -205,11 +277,15 @@ window.addEventListener("load", () => {
 
 });
 
+
 // -----------------------------
 // Simple image hover effect
 // -----------------------------
 
-document.querySelectorAll(".property-card img, .featured-photo img, .location-image img").forEach(image => {
+document.querySelectorAll(
+    ".property-card img, .featured-photo img, .location-image img"
+).forEach(image => {
+
 
     image.addEventListener("mouseenter", () => {
 
@@ -218,13 +294,16 @@ document.querySelectorAll(".property-card img, .featured-photo img, .location-im
 
     });
 
+
     image.addEventListener("mouseleave", () => {
 
         image.style.transform = "scale(1)";
 
     });
 
+
 });
+
 
 // -----------------------------
 // Current year for footer
@@ -232,12 +311,22 @@ document.querySelectorAll(".property-card img, .featured-photo img, .location-im
 
 const footerText = document.querySelector(".footer-bottom p");
 
+
 if (footerText) {
 
     footerText.innerHTML =
         `© ${new Date().getFullYear()} Oak & Stone Estate Agents. All Rights Reserved.`;
 
 }
+
+
+// -----------------------------
+// Console confirmation
+// -----------------------------
+
+console.log("Oak & Stone website loaded successfully.");
+console.log("AI lead automation connected.");
+
 
 // =======================================
 // End of script.js
